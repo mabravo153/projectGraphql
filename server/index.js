@@ -1,30 +1,34 @@
 const { GraphQLServer } = require('graphql-yoga');
-
+const { PrismaClient } = require('./prisma/node_modules/@prisma/client')
+const prisma = new PrismaClient()
 
 //crear el resolver 
-/*
+
 const resolvers = {
-    Query:{
-        feed:
-        link:
-        }
+    Query: {
+        feed: async (root, args, context, info ) => await context.prisma.link.findMany()
+        
     },
-    Mutation: {
-        post: 
+    Mutation:{
+        post: async (root, args, context) => await context.prisma.link.create({
+            data:{
+                url: args.url,
+                description: args.description
+            },
 
-        updatePost: 
-
-        deletePost:
+        }) 
     }
+
+
 }
 
-*/
-//crear el servidor 
 
+//crear el servidor 
 
 const server = new GraphQLServer({
     typeDefs: './server/schema/schema.graphql',
-    resolvers
+    resolvers,
+    context: { prisma }
 })
 
 
